@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import javafx.scene.layout.*;
 import javafx.event.*;
 import java.math.BigDecimal;
-
+import java.util.*;
 
 public class Caculator extends Application {
 	BigDecimal compute1;
@@ -36,14 +36,22 @@ public class Caculator extends Application {
 	boolean minus = false ;
 	boolean remainder = false;
 	boolean sqrt = false; 	
+	boolean inverseNumber = false;
 	boolean result = false;
+	boolean isMR = false ;
+	boolean mAdd = false;
+	boolean mMinus = false;
 	double number1 = 0 ;
 	double number2 = 0 ;
+	double mR = 0;
+	double mRAdd = 0;
+	double mRMinus = 0;
+	ArrayList<Double> m = new ArrayList<>() ;
 	@Override // Override the start method in the Application class
 	public void start(Stage primaryStage) {
 		// Create a scene and place a button in the scene
 		
-		String[] bt  = {"MC","MR","MS","M","M-","ก๖","CE","C","กำ","กิ","7","8","9","/","%","4","5","6","*","1/x","1","2","3","-","=","0",".","+"};
+		String[] bt  = {"MC","MR","MS","M+","M-","ก๖","CE","C","กำ","กิ","7","8","9","/","%","4","5","6","*","1/x","1","2","3","-","=","0",".","+"};
 		
 		menuBar.getMenus().addAll(menuView, menuEdit, menu);
 		grid.add(menuBar,0,0,5,1);
@@ -113,19 +121,58 @@ public class Caculator extends Application {
 		process.setPrefSize(340 ,40 );
 		grid.add(process,0,1,5,1);
 		tex.setEditable(false);
-		//tex.selectPosition(Pos.BOTTOM_RIGHT);
+		tex.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 		tex.setPrefSize(340 ,120 );
 		grid.add(tex,0,2,5,1);
 		//MC
-		//bts[0].setOnAction(e -> {});
+		bts[0].setOnAction(e -> {
+			mR = 0;
+			while(m.size() >= 1){
+				m.remove(0);
+			}
+			tex.setText("0");
+			isMR = false;
+			mAdd = false;
+			mMinus = false;
+		});
 		//MR
-		//bts[1].setOnAction(e -> {});
+		bts[1].setOnAction(e -> {
+			if(isMR == false){
+				mR = Double.parseDouble(tex.getText()) ;
+				tex.setText("0");
+				isMR = true;
+			}
+		});
 		//MS
-		//bts[2].setOnAction(e -> {});
-		//M
-		//bts[3].setOnAction(e -> {});
+		bts[2].setOnAction(e -> {
+			mR = Double.parseDouble(tex.getText()) ;
+			tex.setText("0");
+			isMR = true;
+		});
+		//M+
+		bts[3].setOnAction(e -> {
+			m.add(Double.parseDouble(tex.getText()));
+			mAdd = true;
+			mMinus = false;
+			cross = false ;
+			add = false ;
+			minus = false ;
+			remainder = false; 
+			quotient = false ;	
+			sqrt = false;
+		});
 		//M-
-		//bts[4].setOnAction(e -> {});
+		bts[4].setOnAction(e -> {
+			m.add(Double.parseDouble(tex.getText()));
+			mAdd = false;
+			mMinus = true;
+			cross = false ;
+			add = false ;
+			minus = false ;
+			remainder = false; 
+			quotient = false ;	
+			sqrt = false;
+		});
 		//ก๖
 		bts[5].setOnAction(e -> {
 			tex.selectBackward();
@@ -133,13 +180,6 @@ public class Caculator extends Application {
 		});
 		//CE
 		bts[6].setOnAction(e -> {
-			cross = false ;
-			add = false ;
-			minus = false ;
-			remainder = false; 
-			quotient = false ;
-			number1 = 0;
-			number2 = 0;
 			tex.setText("0");
 		});
 		//C
@@ -149,6 +189,8 @@ public class Caculator extends Application {
 			minus = false ;
 			remainder = false; 
 			quotient = false ;
+			sqrt = false;
+			mR = 0;
 			number1 = 0;
 			number2 = 0;
 			tex.setText("0");
@@ -164,26 +206,17 @@ public class Caculator extends Application {
 		//sqrt
 		bts[9].setOnAction(e -> {
 			sqrt = true;
-			if(quotient == true || remainder == true || minus == true || add == true || cross == true || sqrt == true){
-				number2 = Double.parseDouble(tex.getText());
-				caculate();
-				quotient = false ;
-				cross = false ;
-				add = false ;
-				minus = false ;
-				remainder = false; 	
-			}
 			
-			number1 = Double.parseDouble(tex.getText());
+			number2 = Double.parseDouble(tex.getText());
 			caculate();								
-			
+			sqrt = false;
 		});
 		//7
 		bts[10].setOnAction(e -> {
 			if(result == true && quotient == false && remainder == false && minus == false && add == false && cross == false && sqrt == false){
 				number1 = 0;
 			}
-			if(result == true){
+			if(result == true || tex.getText().equals("0")){
 				tex.setText("");
 				result = false;
 			}
@@ -194,7 +227,7 @@ public class Caculator extends Application {
 			if(result == true && quotient == false && remainder == false && minus == false && add == false && cross == false && sqrt == false){
 				number1 = 0;
 			}
-			if(result == true){
+			if(result == true || tex.getText().equals("0")){
 				tex.setText("");
 				result = false;
 			}
@@ -205,7 +238,7 @@ public class Caculator extends Application {
 			if(result == true && quotient == false && remainder == false && minus == false && add == false && cross == false && sqrt == false){
 				number1 = 0;
 			}
-			if(result == true){
+			if(result == true || tex.getText().equals("0")){
 				tex.setText("");
 				result = false;
 			}
@@ -227,9 +260,7 @@ public class Caculator extends Application {
 			add = false ;
 			minus = false ;
 			remainder = false; 
-			quotient = true ;
-			
-			 
+			quotient = true ;			 
 		});
 		//%
 		bts[14].setOnAction(e -> {
@@ -247,14 +278,13 @@ public class Caculator extends Application {
 			add = false ;
 			minus = false ;
 			remainder = true ;
-
 		});
 		//4
 		bts[15].setOnAction(e -> {
 			if(result == true && quotient == false && remainder == false && minus == false && add == false && cross == false && sqrt == false){
 				number1 = 0;
 			}
-			if(result == true){
+			if(result == true || tex.getText().equals("0")){
 				tex.setText("");
 				result = false;
 			}
@@ -265,7 +295,7 @@ public class Caculator extends Application {
 			if(result == true && quotient == false && remainder == false && minus == false && add == false && cross == false && sqrt == false){
 				number1 = 0;
 			}
-			if(result == true){
+			if(result == true || tex.getText().equals("0")){
 				tex.setText("");
 				result = false;
 			}
@@ -276,7 +306,7 @@ public class Caculator extends Application {
 			if(result == true && quotient == false && remainder == false && minus == false && add == false && cross == false && sqrt == false){
 				number1 = 0;
 			}
-			if(result == true){
+			if(result == true || tex.getText().equals("0")){
 				tex.setText("");
 				result = false;
 			}
@@ -300,13 +330,18 @@ public class Caculator extends Application {
 			remainder = false ;
 		});
 		// 1/x
-		//bts[19].setOnAction(e -> {});
+		bts[19].setOnAction(e -> {
+			inverseNumber = true;			
+			number2 = Double.parseDouble(tex.getText());
+			caculate();								
+			inverseNumber = false;
+		});
 		//1
 		bts[20].setOnAction(e -> {
 			if(result == true && quotient == false && remainder == false && minus == false && add == false && cross == false && sqrt == false){
 				number1 = 0;
 			}
-			if(result == true){				
+			if(result == true || tex.getText().equals("0")){				
 				tex.setText("");
 				result = false;
 			}
@@ -317,7 +352,7 @@ public class Caculator extends Application {
 			if(result == true && quotient == false && remainder == false && minus == false && add == false && cross == false && sqrt == false){
 				number1 = 0;
 			}
-			if(result == true){
+			if(result == true || tex.getText().equals("0")){
 				tex.setText("");
 				result = false;
 			}
@@ -328,7 +363,7 @@ public class Caculator extends Application {
 			if(result == true && quotient == false && remainder == false && minus == false && add == false && cross == false && sqrt == false){
 				number1 = 0;
 			}
-			if(result == true){				
+			if(result == true || tex.getText().equals("0")){				
 				tex.setText("");
 				result = false;
 			}
@@ -361,7 +396,9 @@ public class Caculator extends Application {
 			cross = false ;
 			add = false ;
 			minus = false ;
-			remainder = false; 			
+			remainder = false;
+			mAdd = false;
+			mMinus = false;
 			
 			
 		});
@@ -370,7 +407,7 @@ public class Caculator extends Application {
 			if(result == true && quotient == false && remainder == false && minus == false && add == false && cross == false && sqrt == false){
 				number1 = 0;
 			}
-			if(result == true){
+			if(result == true || tex.getText().equals("0")){
 				tex.setText("");
 				result = false;
 			}
@@ -417,7 +454,15 @@ public class Caculator extends Application {
 		primaryStage.show(); // Display the stage
 	}
 	public void caculate(){
-		if(quotient == true){
+		if(sqrt == true){
+			number2 = Math.sqrt(number2);
+			tex.setText(Double.toString(number2));
+		}else if(inverseNumber == true){
+			compute1 = new BigDecimal(1);
+			compute2 = new BigDecimal(number2);
+			number2 = compute1.divide(compute2).doubleValue();
+			tex.setText(Double.toString(number2));
+		}else if(quotient == true){
 			compute1 = new BigDecimal(number1);
 			compute2 = new BigDecimal(number2);
 			number1 = compute1.divide(compute2).doubleValue();
@@ -442,18 +487,25 @@ public class Caculator extends Application {
 			compute2 = new BigDecimal(number2);
 			number1 = compute1.add(compute2).doubleValue();
 			tex.setText(Double.toString(number1));
-		}else if(sqrt == true){
-			number1 = Math.sqrt(number1);
-			tex.setText(Double.toString(number1));
+		}else if(isMR == true && mAdd == true){
+			mRAdd = mR;
+			while(m.size()>=1){
+				mRAdd = mRAdd + m.get(0);
+				m.remove(0);
+			}
+			number1 = mRAdd ;
+			tex.setText(Double.toString(mRAdd));
+		}else if(isMR == true && mMinus == true){
+			mRMinus = mR ;
+			while(m.size()>=1){
+				mRMinus = mRMinus - m.get(0);
+				m.remove(0);
+			}
+			number1 = mRMinus ; 
+			tex.setText(Double.toString(mRMinus));
 		}
-		result = true ;
-		
+		result = true ;		
 	}
-	
-  /**
-   * The main method is only needed for the IDE with limited
-   * JavaFX support. Not needed for running from the command line.
-   */
   public static void main(String[] args) {
     launch(args);
   }
