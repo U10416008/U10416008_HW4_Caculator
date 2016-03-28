@@ -56,7 +56,7 @@ public class Caculator extends Application {
 		menuBar.getMenus().addAll(menuView, menuEdit, menu);
 		grid.add(menuBar,0,0,5,1);
 		
-		String[] menuV = {"標準型(T)　　　　　　 Alt+1", "工程型(S)　　　　     Alt+2", "程式設計師(P)　　　 Alt+3", "統計資料(A)　　　　 Alt+4", "歷程記錄(Y)　　　　Ctrl+H", 
+		String[] menuV = {"標準型(T)　　　　　 Alt+1", "工程型(S)　　　　     Alt+2", "程式設計師(P)　　　 Alt+3", "統計資料(A)　　　　 Alt+4", "歷程記錄(Y)　　　　Ctrl+H", 
 		"數字分位(I)", "基本(B)　　　　　   Ctrl+F4", "單位轉換(U)　　　　Ctrl+U", "日期計算(D)　　　　Ctrl+E"};
 		String[] menuJ = {"貸款(M)","汽車租賃(V)","平均油耗(公里/公升)(F)","平均油耗(公升/100公里)(U)"};
 		String[] menuE = {"複製(C)　　　Ctrl+C","貼上(V)　　　Ctrl+V"};
@@ -124,6 +124,21 @@ public class Caculator extends Application {
 		tex.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 		tex.setPrefSize(340 ,120 );
 		grid.add(tex,0,2,5,1);
+		//items[0].setOnAction(e ->{});
+		//items[1].setOnAction(e ->{});
+		//items[2].setOnAction(e ->{});
+		//items[3].setOnAction(e ->{});
+		//items[4].setOnAction(e ->{});
+		//items[5].setOnAction(e ->{});
+		//items[6].setOnAction(e ->{});
+		items[7].setOnAction(e ->{
+			
+		});
+		items[8].setOnAction(e ->{
+			CaculatorDate cD = new CaculatorDate();
+			Stage secondStage = new Stage();
+			cD.start(secondStage);
+		});
 		//MC
 		bts[0].setOnAction(e -> {
 			mR = 0;
